@@ -27,11 +27,6 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.two),
             findViewById(R.id.three),
             findViewById(R.id.four),
-//            findViewById(R.id.squareRoot),
-//            findViewById(R.id.negate),
-//            findViewById(R.id.delete),
-//            findViewById(R.id.sine),
-//            findViewById(R.id.cosine),
             findViewById(R.id.five),
             findViewById(R.id.six),
             findViewById(R.id.seven),
@@ -136,9 +131,6 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.equals).setOnClickListener {
 
             val currentText: String = screen.text.toString()
-//            currentText = InfixToPostfix.infixToPostfix(currentText)
-//            Log.i("MainActivity",currentText)
-
 
             try {
                 // Specify the delimiters for split
@@ -179,20 +171,16 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         '/' -> {
-//                            if (numbers.size ==2){
+
                             val results: Double =
                                 divide(numbers[0].toDouble(), numbers[1].toDouble())
                             screen.text = results.toString()
-//                            }else{
-//                                screen.text="Oops! sorry"
-//                            }
                         }
 
                         'x' -> {
 //                            if (numbers.size ==2){
                             val result: Int = multiply(numbers[0], numbers[1])
                             screen.text = result.toString()
-//                            }
                         }
 
 
