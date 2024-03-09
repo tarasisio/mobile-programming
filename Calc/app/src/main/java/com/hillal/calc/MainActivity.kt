@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.*
 import java.lang.Double.parseDouble
 import java.lang.Integer.parseInt
+import kotlin.math.sqrt
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,92 +44,82 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.minus),
         )
 
-        var Reset = findViewById<Button>(R.id.ac)
+        val Reset = findViewById<Button>(R.id.ac)
 
-            Reset.setOnClickListener {
-            screen.text=""
-                Reset.text="AC"
+        Reset.setOnClickListener {
+            screen.text = ""
+            Reset.text = "AC"
         }
 
-        findViewById<Button>(R.id.percentage).setOnClickListener{
-            var temp = screen.text.toString()
-            if (temp==""){
-                screen.text ="percentage error!"
-            }else{
-                var c = parseDouble(temp)
-                var v = c/100
-                screen.text =v.toString()
+        findViewById<Button>(R.id.percentage).setOnClickListener {
+            val temp = screen.text.toString()
+            if (temp == "") {
+                screen.text = "percentage error!"
+            } else {
+                val c = parseDouble(temp)
+                val v = c / 100
+                screen.text = v.toString()
             }
 
         }
 
-        var negate = findViewById<Button>(R.id.negate)
-        if (negate!=null){
-            negate.setOnClickListener{
-                var current =screen.text.toString()
-                var newcurrent = parseInt(current)*-1
+        val negate = findViewById<Button>(R.id.negate)
+        if (negate != null) {
+            negate.setOnClickListener {
+                val current = screen.text.toString()
+                val newcurrent = parseInt(current) * -1
                 screen.text = newcurrent.toString()
             }
         }
 
 
-        var addition = findViewById<Button>(R.id.plus)
-            addition.setOnClickListener {
-            var plusText = addition.text
-             var currentText = screen.text
-            screen.text = currentText.toString()+plusText
+        val addition = findViewById<Button>(R.id.plus)
+        addition.setOnClickListener {
+            val plusText = addition.text
+            val currentText = screen.text
+            screen.text = currentText.toString() + plusText
 
         }
 
-        var Sine = findViewById<Button>(R.id.sine)
-            if (Sine != null){
-                Sine.setOnClickListener{
+        val Sine = findViewById<Button>(R.id.sine)
+        if (Sine != null) {
+            Sine.setOnClickListener {
 
-                    try {
-                        var sineConversion = screen.text.toString()
-                        screen.text = Math.sin(Math.toRadians(parseDouble(sineConversion))).toString()
+                try {
+                    val sineConversion = screen.text.toString()
+                    screen.text = Math.sin(Math.toRadians(parseDouble(sineConversion))).toString()
 
-                    }catch (e :NumberFormatException){
-                        Log.e("MainActivity","Error parsing number : $e{e.message")
+                } catch (e: NumberFormatException) {
+                    Log.e("MainActivity", "Error parsing number : $e{e.message")
 
-                        screen.text ="Error"
-                    }
-
-                }
-            }
-
-
-        var Cosine = findViewById<Button>(R.id.cosine)
-
-            if (Cosine != null){
-                Cosine.setOnClickListener {
-                    try {
-                        var cosineConversion = screen.text.toString()
-
-                        screen.text = Math.cos(Math.toRadians(parseDouble(cosineConversion))).toString()
-                    }catch (e:NumberFormatException){
-                        Log.e("MainActivity","Error parsing number : $e{e.message")
-
-                        screen.text="Error"
-                    }
+                    screen.text = "Error"
                 }
 
             }
+        }
 
 
-        var squareroot = findViewById<Button>(R.id.squareRoot)
+        findViewById<Button>(R.id.cosine)?.setOnClickListener {
+            try {
+                val cosineConversion = screen.text.toString()
 
-            if (squareroot!= null){
-                squareroot.setOnClickListener {
-                    var squareRoot = screen.text.toString()
+                screen.text = Math.cos(Math.toRadians(parseDouble(cosineConversion))).toString()
+            } catch (e: NumberFormatException) {
+                Log.e("MainActivity", "Error parsing number : $e{e.message")
 
-                    screen.text = Math.sqrt(parseDouble(squareRoot)).toString()
-                }
-
+                screen.text = "Error"
             }
+        }
 
 
-        var erase = findViewById<Button>(R.id.delete)
+        findViewById<Button>(R.id.squareRoot)?.setOnClickListener {
+            val squareRoot = screen.text.toString()
+
+            screen.text = sqrt(parseDouble(squareRoot)).toString()
+        }
+
+
+        val erase = findViewById<Button>(R.id.delete)
 
 
         erase?.setOnClickListener {
@@ -142,12 +133,11 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        findViewById<Button>(R.id.equals).setOnClickListener{
+        findViewById<Button>(R.id.equals).setOnClickListener {
 
-            var currentText : String = screen.text.toString()
+            val currentText: String = screen.text.toString()
 //            currentText = InfixToPostfix.infixToPostfix(currentText)
 //            Log.i("MainActivity",currentText)
-
 
 
             try {
@@ -159,7 +149,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (operator != null) {
                     // Split the current text by the identified operator and get individual numbers
-                    var numbers = currentText.split(operator).map { it.toInt() }.toIntArray()
+                    val numbers = currentText.split(operator).map { it.toInt() }.toIntArray()
 
                     when (operator) {
                         '+' -> {
@@ -174,6 +164,7 @@ class MainActivity : AppCompatActivity() {
                                 screen.text = results.toString()
                             }
                         }
+
                         '-' -> {
                             if (numbers.size == 2) {
                                 // Perform subtraction using the subtract function if there are just two numbers
@@ -182,22 +173,25 @@ class MainActivity : AppCompatActivity() {
 
                             } else {
                                 // Handle the case where there are not enough numbers for subtraction
-                                var  result :Int = subtraction(*numbers)
+                                val result: Int = subtraction(*numbers)
                                 screen.text = result.toString()
                             }
                         }
-                        '/'->{
+
+                        '/' -> {
 //                            if (numbers.size ==2){
-                                val results : Double = divide(numbers[0].toDouble(),numbers[1].toDouble())
-                                screen.text = results.toString()
+                            val results: Double =
+                                divide(numbers[0].toDouble(), numbers[1].toDouble())
+                            screen.text = results.toString()
 //                            }else{
 //                                screen.text="Oops! sorry"
 //                            }
                         }
-                        'x'->{
+
+                        'x' -> {
 //                            if (numbers.size ==2){
-                                var result : Int = multiply(numbers[0],numbers[1])
-                                screen.text =result.toString()
+                            val result: Int = multiply(numbers[0], numbers[1])
+                            screen.text = result.toString()
 //                            }
                         }
 
@@ -218,8 +212,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-
         val buttonClickListener = { button: Button ->
             val buttonText = button.text
             val currentText = screen.text
@@ -230,15 +222,11 @@ class MainActivity : AppCompatActivity() {
 
         buttons.forEach { button ->
             button.setOnClickListener {
-                Reset.text ="C"
+                Reset.text = "C"
                 buttonClickListener.invoke(button)
 
             }
         }
-
-
-
-
 
 
     }
@@ -273,7 +261,7 @@ fun subtraction(vararg numbers : Int):Int{
 }
 
 fun divide(parameterOne: Double,parameterTwo: Double):Double{
-    val result:Double  =(parameterOne/parameterTwo).toDouble()
+    val result:Double  =(parameterOne/parameterTwo)
     return  result
 
 }
