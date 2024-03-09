@@ -7,8 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import java.lang.Double.parseDouble
-
-
+import java.lang.Integer.parseInt
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +26,11 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.two),
             findViewById(R.id.three),
             findViewById(R.id.four),
+//            findViewById(R.id.squareRoot),
+//            findViewById(R.id.negate),
+//            findViewById(R.id.delete),
+//            findViewById(R.id.sine),
+//            findViewById(R.id.cosine),
             findViewById(R.id.five),
             findViewById(R.id.six),
             findViewById(R.id.seven),
@@ -58,6 +62,11 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        var negate = findViewById<Button>(R.id.negate).setOnClickListener{
+            var current =screen.text.toString()
+            var newcurrent = parseInt(current)*-1
+            screen.text = newcurrent.toString()
+        }
 
         var addition = findViewById<Button>(R.id.plus)
 
@@ -69,7 +78,37 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-//        findViewById<Button>(R.id.multiply)
+        var Sine = findViewById<Button>(R.id.sine).setOnClickListener{
+
+            try {
+                var sineConversion = screen.text.toString()
+                screen.text = Math.sin(Math.toRadians(parseDouble(sineConversion))).toString()
+
+            }catch (e :NumberFormatException){
+                Log.e("MainActivity","Error parsing number : $e{e.message")
+
+                screen.text ="Error"
+            }
+
+        }
+
+        var Cosine = findViewById<Button>(R.id.cosine).setOnClickListener {
+            try {
+                var cosineConversion = screen.text.toString()
+
+                screen.text = Math.cos(Math.toRadians(parseDouble(cosineConversion))).toString()
+            }catch (e:NumberFormatException){
+                Log.e("MainActivity","Error parsing number : $e{e.message")
+
+                screen.text="Error"
+            }
+        }
+
+        var squareroot = findViewById<Button>(R.id.squareRoot).setOnClickListener {
+            var squareRoot = screen.text.toString()
+
+            screen.text = Math.sqrt(parseDouble(squareRoot)).toString()
+        }
 
         findViewById<Button>(R.id.equals).setOnClickListener{
 
