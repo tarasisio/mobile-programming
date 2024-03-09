@@ -62,53 +62,85 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        var negate = findViewById<Button>(R.id.negate).setOnClickListener{
-            var current =screen.text.toString()
-            var newcurrent = parseInt(current)*-1
-            screen.text = newcurrent.toString()
+        var negate = findViewById<Button>(R.id.negate)
+        if (negate!=null){
+            negate.setOnClickListener{
+                var current =screen.text.toString()
+                var newcurrent = parseInt(current)*-1
+                screen.text = newcurrent.toString()
+            }
         }
 
+
         var addition = findViewById<Button>(R.id.plus)
-
             addition.setOnClickListener {
-
             var plusText = addition.text
              var currentText = screen.text
             screen.text = currentText.toString()+plusText
 
         }
 
-        var Sine = findViewById<Button>(R.id.sine).setOnClickListener{
+        var Sine = findViewById<Button>(R.id.sine)
+            if (Sine != null){
+                Sine.setOnClickListener{
 
-            try {
-                var sineConversion = screen.text.toString()
-                screen.text = Math.sin(Math.toRadians(parseDouble(sineConversion))).toString()
+                    try {
+                        var sineConversion = screen.text.toString()
+                        screen.text = Math.sin(Math.toRadians(parseDouble(sineConversion))).toString()
 
-            }catch (e :NumberFormatException){
-                Log.e("MainActivity","Error parsing number : $e{e.message")
+                    }catch (e :NumberFormatException){
+                        Log.e("MainActivity","Error parsing number : $e{e.message")
 
-                screen.text ="Error"
+                        screen.text ="Error"
+                    }
+
+                }
             }
 
-        }
 
-        var Cosine = findViewById<Button>(R.id.cosine).setOnClickListener {
-            try {
-                var cosineConversion = screen.text.toString()
+        var Cosine = findViewById<Button>(R.id.cosine)
 
-                screen.text = Math.cos(Math.toRadians(parseDouble(cosineConversion))).toString()
-            }catch (e:NumberFormatException){
-                Log.e("MainActivity","Error parsing number : $e{e.message")
+            if (Cosine != null){
+                Cosine.setOnClickListener {
+                    try {
+                        var cosineConversion = screen.text.toString()
 
-                screen.text="Error"
+                        screen.text = Math.cos(Math.toRadians(parseDouble(cosineConversion))).toString()
+                    }catch (e:NumberFormatException){
+                        Log.e("MainActivity","Error parsing number : $e{e.message")
+
+                        screen.text="Error"
+                    }
+                }
+
+            }
+
+
+        var squareroot = findViewById<Button>(R.id.squareRoot)
+
+            if (squareroot!= null){
+                squareroot.setOnClickListener {
+                    var squareRoot = screen.text.toString()
+
+                    screen.text = Math.sqrt(parseDouble(squareRoot)).toString()
+                }
+
+            }
+
+
+        var erase = findViewById<Button>(R.id.delete)
+
+
+        erase?.setOnClickListener {
+            val screenContent = screen.text.toString()
+
+            if (screenContent.isNotEmpty()) {
+                // Get the substring excluding the last character
+                val newScreenContent = screenContent.substring(0, screenContent.length - 1)
+                screen.text = newScreenContent
             }
         }
 
-        var squareroot = findViewById<Button>(R.id.squareRoot).setOnClickListener {
-            var squareRoot = screen.text.toString()
-
-            screen.text = Math.sqrt(parseDouble(squareRoot)).toString()
-        }
 
         findViewById<Button>(R.id.equals).setOnClickListener{
 
