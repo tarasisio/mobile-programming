@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        val postfix = InfixToPostfix()
+
         val screen = findViewById<TextView>(R.id.screen)
         val buttons = listOf<Button>(
             findViewById(R.id.Zero),
