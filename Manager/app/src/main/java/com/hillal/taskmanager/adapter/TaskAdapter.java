@@ -3,6 +3,8 @@ package com.hillal.taskmanager.adapter;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -89,23 +91,62 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.menuDelete) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.AppTheme_Dialog);
-                alertDialogBuilder.setTitle(R.string.delete_confirmation).setMessage(R.string.sureToDelete).
-                        setPositiveButton(R.string.yes, (dialog, which) -> {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder
+                        .setTitle(R.string.delete_confirmation)
+                        .setMessage(R.string.sureToDelete)
+                        .setPositiveButton(R.string.yes, (dialog, which) -> {
                             deleteTaskFromId(task.getTaskId(), position);
                         })
-                        .setNegativeButton(R.string.no, (dialog, which) -> dialog.cancel()).show();
+                        .setNegativeButton(R.string.no, (dialog, which) -> dialog.cancel());
+
+                // Set background color
+                Dialog dialog = alertDialogBuilder.create();
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                // Set button text color
+                dialog.setOnShowListener(dialogInterface -> {
+                    Button positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+                    Button negativeButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_NEGATIVE);
+                    if (positiveButton != null && negativeButton != null) {
+                        positiveButton.setTextColor(context.getResources().getColor(android.R.color.black)); // Change to the desired text color
+                        negativeButton.setTextColor(context.getResources().getColor(android.R.color.black)); // Change to the desired text color
+                    }
+                });
+
+                dialog.show();
+                return true; // Item click handled
             } else if (itemId == R.id.menuUpdate) {
                 CreateTaskBottomSheetFragment createTaskBottomSheetFragment = new CreateTaskBottomSheetFragment();
                 createTaskBottomSheetFragment.setTaskId(task.getTaskId(), true, context, context);
                 createTaskBottomSheetFragment.show(context.getSupportFragmentManager(), createTaskBottomSheetFragment.getTag());
+                return true; // Item click handled
             } else if (itemId == R.id.menuComplete) {
-                AlertDialog.Builder completeAlertDialog = new AlertDialog.Builder(context, R.style.AppTheme_Dialog);
-                completeAlertDialog.setTitle(R.string.confirmation).setMessage(R.string.sureToMarkAsComplete).
-                        setPositiveButton(R.string.yes, (dialog, which) -> showCompleteDialog(task.getTaskId(), position))
-                        .setNegativeButton(R.string.no, (dialog, which) -> dialog.cancel()).show();
+                AlertDialog.Builder completeAlertDialog = new AlertDialog.Builder(context);
+                completeAlertDialog
+                        .setTitle(R.string.confirmation)
+                        .setMessage(R.string.sureToMarkAsComplete)
+                        .setPositiveButton(R.string.yes, (dialog, which) -> showCompleteDialog(task.getTaskId(), position))
+                        .setNegativeButton(R.string.no, (dialog, which) -> dialog.cancel());
+
+                // Set background color
+                Dialog dialog = completeAlertDialog.create();
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+                // Set button text color
+                dialog.setOnShowListener(dialogInterface -> {
+                    Button positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+                    Button negativeButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_NEGATIVE);
+                    if (positiveButton != null && negativeButton != null) {
+                        positiveButton.setTextColor(context.getResources().getColor(android.R.color.black)); // Change to the desired text color
+                        negativeButton.setTextColor(context.getResources().getColor(android.R.color.black)); // Change to the desired text color
+                    }
+                });
+
+                dialog.show();
+                return true; // Item click handled
             }
-            return true;
+            return false; // Item click not handled
         });
         popupMenu.show();
     }
@@ -180,3 +221,4 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
     }
 }
+
