@@ -16,7 +16,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_gravity="center"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/btn_background"
         android:orientation="vertical">
 
     <ImageView
@@ -58,7 +58,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginTop="50dp"
             android:background="@drawable/btn_background"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorBanner"
             android:text="Done"
             android:layout_marginBottom="30dp"
             android:textAllCaps="false"/>
