@@ -1,27 +1,24 @@
 package com.hillal.taskmanager.activity;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hillal.taskmanager.R;
 import com.hillal.taskmanager.bottomSheetFragment.CreateSubTaskBottomSheetFragment;
 
-import java.util.Locale;
-
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
-public abstract class BaseActivity extends AppCompatActivity {
+public class SubTasksActivity extends AppCompatActivity {
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.item_task);
+        setContentView(R.layout.item_subtask);
 
         // Find additional ImageView from item_task
         ImageView additional = findViewById(R.id.additional);
@@ -43,6 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
+
 
 
 }

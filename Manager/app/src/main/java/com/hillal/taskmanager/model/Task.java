@@ -12,11 +12,12 @@ public class Task implements Serializable {
     @PrimaryKey(autoGenerate = true)
     int taskId;
     @ColumnInfo(name = "taskTitle")
+
     String taskTitle;
     @ColumnInfo(name = "date")
     String date;
     @ColumnInfo(name = "taskDescription")
-    String taskDescrption;
+    String taskDescription;
     @ColumnInfo(name = "isComplete")
     boolean isComplete;
     @ColumnInfo(name = "firstAlarmTime")
@@ -80,7 +81,7 @@ public class Task implements Serializable {
         this.taskId = taskId;
     }
 
-    public String getTaskTitle() {
+    public  String getTaskTitle() {
         return taskTitle;
     }
 
@@ -96,11 +97,11 @@ public class Task implements Serializable {
         this.date = date;
     }
 
-    public String getTaskDescrption() {
-        return taskDescrption;
+    public  String getTaskDescription() {
+        return taskDescription;
     }
 
-    public void setTaskDescrption(String taskDescrption) {
-        this.taskDescrption = taskDescrption;
+    public void setTaskDescription(String taskDescription) {
+        this.taskDescription = taskDescription;
     }
 }

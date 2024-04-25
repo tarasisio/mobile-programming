@@ -7,9 +7,10 @@ import androidx.room.InvalidationTracker;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
+import com.hillal.taskmanager.model.SubTask;
 import com.hillal.taskmanager.model.Task;
 
-@Database(entities = {Task.class}, version = 1, exportSchema = false)
+@Database(entities = {Task.class,SubTask.class}, version = 2, exportSchema = false)
 public  abstract class AppDatabase extends RoomDatabase {
 
     public abstract OnDataBaseAction dataBaseAction();

@@ -5,36 +5,35 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
 import com.hillal.taskmanager.R;
 
-//import butterknife.BindView;
-//import butterknife.ButterKnife;
 
 public class AlarmActivity extends BaseActivity {
 
 
     private static AlarmActivity inst;
-//    @BindView(R.id.imageView)
+
     ImageView imageView=findViewById(R.id.imageView);
 
 
-//    @BindView(R.id.title)
+
     TextView title= findViewById(R.id.title);
 
 
-//    @BindView(R.id.description)
+
     TextView description=findViewById(R.id.description);
 
 
-//    @BindView(R.id.timeAndData)
+
     TextView timeAndData =findViewById(R.id.timeAndData);
 
 
 
-//    @BindView(R.id.closeButton)
+
     Button closeButton =findViewById(R.id.closeButton);
     MediaPlayer mediaPlayer;
 
@@ -66,5 +65,10 @@ public class AlarmActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         mediaPlayer.release();
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
     }
 }

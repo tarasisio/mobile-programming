@@ -1,38 +1,68 @@
 package com.hillal.taskmanager.bottomSheetFragment;
 
-import static android.content.Context.ALARM_SERVICE;
-
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+
 import com.hillal.taskmanager.R;
+import com.hillal.taskmanager.bottomSheetFragment.CreateSubTaskBottomSheetFragment;
+import com.hillal.taskmanager.activity.AlarmActivity;
 import com.hillal.taskmanager.activity.MainActivity;
 import com.hillal.taskmanager.broadcastReceiver.AlarmBroadcastReceiver;
 import com.hillal.taskmanager.database.DatabaseClient;
 import com.hillal.taskmanager.model.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+//import com.zubair.alarmmanager.builder.AlarmBuilder;
+//import com.zubair.alarmmanager.enums.AlarmType;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
+
+
+
+import static android.content.Context.ALARM_SERVICE;
 
 public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
 
-    EditText addTaskTitle, addTaskDescription, taskDate, taskTime, taskEvent;
+
+
+    EditText addTaskTitle ;
+
+    EditText addTaskDescription;
+
+    EditText taskDate;
+
+    EditText taskTime;
+
+    EditText taskEvent;
+
     Button addTask;
     int taskId;
     boolean isEdit;
@@ -49,14 +79,14 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
         @Override
-        public void onStateChanged(View bottomSheet, int newState) {
+        public void onStateChanged(@NonNull View bottomSheet, int newState) {
             if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                 dismiss();
             }
         }
 
         @Override
-        public void onSlide(View bottomSheet, float slideOffset) {
+        public void onSlide(@NonNull View bottomSheet, float slideOffset) {
         }
     };
 
@@ -67,37 +97,40 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
         this.setRefreshListener = setRefreshListener;
     }
 
-    @SuppressLint("RestrictedApi")
+
+    @SuppressLint({"RestrictedApi", "ClickableViewAccessibility"})
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
         View contentView = View.inflate(getContext(), R.layout.fragment_create_task, null);
+
         dialog.setContentView(contentView);
-        alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+
         addTask = contentView.findViewById(R.id.addTask);
-        addTaskTitle = contentView.findViewById(R.id.addTaskTitle);
-        addTaskDescription = contentView.findViewById(R.id.addTaskDescription);
-        taskDate = contentView.findViewById(R.id.taskDate);
-        taskTime = contentView.findViewById(R.id.taskTime);
-        taskEvent = contentView.findViewById(R.id.taskEvent);
+        addTaskTitle = contentView.findViewById(R.id.addTaskTitle); // Initialize addTaskTitle
+        addTaskDescription = contentView.findViewById(R.id.addTaskDescription); // Initialize addTaskDescription
+        taskDate = contentView.findViewById(R.id.taskDate); // Initialize taskDate
+        taskTime = contentView.findViewById(R.id.taskTime); // Initialize taskTime
+        taskEvent = contentView.findViewById(R.id.taskEvent); // Initialize taskEvent
 
+        alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
         addTask.setOnClickListener(view -> {
-            if (validateFields())
+            if(validateFields()) {
                 createTask();
+            }
         });
-
         if (isEdit) {
             showTaskFromId();
         }
 
         taskDate.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 final Calendar c = Calendar.getInstance();
                 mYear = c.get(Calendar.YEAR);
                 mMonth = c.get(Calendar.MONTH);
                 mDay = c.get(Calendar.DAY_OF_MONTH);
                 datePickerDialog = new DatePickerDialog(getActivity(),
-                        (datePicker, year, monthOfYear, dayOfMonth) -> {
+                        (view1, year, monthOfYear, dayOfMonth) -> {
                             taskDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                             datePickerDialog.dismiss();
                         }, mYear, mMonth, mDay);
@@ -108,7 +141,7 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
         });
 
         taskTime.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 // Get Current Time
                 final Calendar c = Calendar.getInstance();
                 mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -116,7 +149,7 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
 
                 // Launch Time Picker Dialog
                 timePickerDialog = new TimePickerDialog(getActivity(),
-                        (timePicker, hourOfDay, minute) -> {
+                        (view12, hourOfDay, minute) -> {
                             taskTime.setText(hourOfDay + ":" + minute);
                             timePickerDialog.dismiss();
                         }, mHour, mMinute, false);
@@ -127,22 +160,27 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     public boolean validateFields() {
-        if (addTaskTitle.getText().toString().equalsIgnoreCase("")) {
+        if(addTaskTitle.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(activity, "Please enter a valid title", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (addTaskDescription.getText().toString().equalsIgnoreCase("")) {
+        }
+        else if(addTaskDescription.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(activity, "Please enter a valid description", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (taskDate.getText().toString().equalsIgnoreCase("")) {
+        }
+        else if(taskDate.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(activity, "Please enter date", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (taskTime.getText().toString().equalsIgnoreCase("")) {
+        }
+        else if(taskTime.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(activity, "Please enter time", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (taskEvent.getText().toString().equalsIgnoreCase("")) {
+        }
+        else if(taskEvent.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(activity, "Please enter an event", Toast.LENGTH_SHORT).show();
             return false;
-        } else {
+        }
+        else {
             return true;
         }
     }
@@ -154,12 +192,12 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
 
     private void createTask() {
         class saveTaskInBackend extends AsyncTask<Void, Void, Void> {
-
+            @SuppressLint("WrongThread")
             @Override
             protected Void doInBackground(Void... voids) {
                 Task createTask = new Task();
                 createTask.setTaskTitle(addTaskTitle.getText().toString());
-                createTask.setTaskDescrption(addTaskDescription.getText().toString());
+                createTask.setTaskDescription(addTaskDescription.getText().toString());
                 createTask.setDate(taskDate.getText().toString());
                 createTask.setLastAlarm(taskTime.getText().toString());
                 createTask.setEvent(taskEvent.getText().toString());
@@ -196,7 +234,7 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
         st.execute();
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void createAnAlarm() {
         try {
             String[] items1 = taskDate.getText().toString().split("-");
@@ -223,7 +261,7 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
             alarmIntent.putExtra("DESC", addTaskDescription.getText().toString());
             alarmIntent.putExtra("DATE", taskDate.getText().toString());
             alarmIntent.putExtra("TIME", taskTime.getText().toString());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, count, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(activity,count, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -231,7 +269,7 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
                 } else {
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
                 }
-                count++;
+                count ++;
 
                 PendingIntent intent = PendingIntent.getBroadcast(activity, count, alarmIntent, PendingIntent.FLAG_IMMUTABLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -242,7 +280,7 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
                         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() - 600000, intent);
                     }
                 }
-                count++;
+                count ++;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -251,7 +289,7 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
 
     private void showTaskFromId() {
         class showTaskFromId extends AsyncTask<Void, Void, Void> {
-
+            @SuppressLint("WrongThread")
             @Override
             protected Void doInBackground(Void... voids) {
                 task = DatabaseClient.getInstance(getActivity()).getAppDatabase()
@@ -271,13 +309,38 @@ public class CreateTaskBottomSheetFragment extends BottomSheetDialogFragment {
 
     private void setDataInUI() {
         addTaskTitle.setText(task.getTaskTitle());
-        addTaskDescription.setText(task.getTaskDescrption());
+        addTaskDescription.setText(task.getTaskDescription());
         taskDate.setText(task.getDate());
         taskTime.setText(task.getLastAlarm());
         taskEvent.setText(task.getEvent());
     }
 
     public interface setRefreshListener {
+        // Method to handle additional button click
+        void onAdditionalButtonClick(int position);
+
         void refresh();
     }
+
+
+
+    private OnTaskSavedListener onTaskSavedListener;
+
+    // Define an interface for the listener
+    public interface OnTaskSavedListener {
+        void onTaskSaved(Task newTask);
+    }
+
+    // Setter method for the listener
+    public void setOnTaskSavedListener(OnTaskSavedListener listener) {
+        this.onTaskSavedListener = listener;
+    }
+
+    // Method to call when a task is saved
+    private void taskSaved(Task newTask) {
+        if (onTaskSavedListener != null) {
+            onTaskSavedListener.onTaskSaved(newTask);
+        }
+    }
+
 }
