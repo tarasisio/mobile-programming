@@ -1,7 +1,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+<!--    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />-->
+
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+
+
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        />
+
+
 
     <application
         android:allowBackup="true"
@@ -16,7 +32,8 @@
 
         <!-- Declare the BroadcastReceiver -->
         <receiver
-            android:name=".broadcastReceiver.AlarmBroadcastReceiver"
+            android:name="com.hillal.taskmanager.broadcastReceiver.AlarmBroadcastReceiver"
+            android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -37,5 +54,7 @@
             android:name=".activity.MainActivity"
             android:exported="true"
             />
+        <activity android:name="com.hillal.taskmanager.activity.AlarmActivity" />
+        <service android:name="com.hillal.taskmanager.broadcastReceiver.AlarmService" />
     </application>
 </manifest>
