@@ -77,9 +77,6 @@ public class MainActivity extends BaseActivity implements CreateTaskBottomSheetF
     @Override
     public void onAdditionalButtonClick(int position) {
 
-//        Log.d("MainActivity","Button jajajajajaj");
-        // Open the fragment for adding a subtask
-//        openAddSubTaskFragment(position);
     }
 
     // Method to open the fragment for adding a subtask
