@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:text="Fill the details below to add a sub task into your TODO"
+            android:text="Fill the details below to add a subtask into your TODO"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:alpha="0.8"
@@ -119,7 +119,7 @@
             android:id="@+id/addSubTask"
             android:text="Add Subtask"
             android:background="@drawable/btn_background"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorAccent"
             android:layout_marginTop="40dp" />
 
     </LinearLayout>
